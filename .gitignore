@@ -15,6 +15,8 @@ tmp/
 tmp/*/*
 tmp/**
 */*.swp
+*.iml
+.idea
 
 /vendor/
 composer.lock
