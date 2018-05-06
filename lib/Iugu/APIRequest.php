@@ -6,17 +6,6 @@ class Iugu_APIRequest
     {
     }
 
-    private function _defaultHeaders($headers = [])
-    {
-        $headers[] = 'Authorization: Basic '.base64_encode(Iugu::getApiKey().':');
-        $headers[] = 'Accept: application/json';
-        $headers[] = 'Accept-Charset: utf-8';
-        $headers[] = 'User-Agent: Iugu PHPLibrary';
-        $headers[] = 'Accept-Language: pt-br;q=0.9,pt-BR';
-
-        return $headers;
-    }
-
     public function request($method, $url, $data = [])
     {
         global $iugu_last_api_response_code;
@@ -43,10 +32,10 @@ class Iugu_APIRequest
         }
 
         if (isset($response->errors)) {
-            if ((gettype($response->errors) != 'string') && count(get_object_vars($response->errors)) == 0) {
+            if ((gettype($response->errors) != 'string') && count(get_object_vars((object)$response->errors)) == 0) {
                 unset($response->errors);
-            } elseif ((gettype($response->errors) != 'string') && count(get_object_vars($response->errors)) > 0) {
-                $response->errors = (array) $response->errors;
+            } elseif ((gettype($response->errors) != 'string') && count(get_object_vars((object)$response->errors)) > 0) {
+                $response->errors = (array)$response->errors;
             }
 
             if (isset($response->errors) && (gettype($response->errors) == 'string')) {
@@ -59,24 +48,15 @@ class Iugu_APIRequest
         return $response;
     }
 
-    private function encodeParameters($method, $url, $data = [])
+    private function _defaultHeaders($headers = [])
     {
-        $method = strtolower($method);
+        $headers[] = 'Authorization: Basic ' . base64_encode(Iugu::getApiKey() . ':');
+        $headers[] = 'Accept: application/json';
+        $headers[] = 'Accept-Charset: utf-8';
+        $headers[] = 'User-Agent: Iugu PHPLibrary';
+        $headers[] = 'Accept-Language: pt-br;q=0.9,pt-BR';
 
-        switch ($method) {
-        case 'get':
-        case 'delete':
-            $paramsInURL = Iugu_Utilities::arrayToParams($data);
-            $data = null;
-            $url = (strpos($url, '?')) ? $url.'&'.$paramsInURL : $url.'?'.$paramsInURL;
-            break;
-        case 'post':
-        case 'put':
-            $data = Iugu_Utilities::arrayToParams($data);
-            break;
-        }
-
-        return [$url, $data];
+        return $headers;
     }
 
     private function requestWithCURL($method, $url, $headers, $data = [])
@@ -109,7 +89,7 @@ class Iugu_APIRequest
 
         $opts[CURLOPT_SSL_VERIFYHOST] = 2;
         $opts[CURLOPT_SSL_VERIFYPEER] = true;
-        $opts[CURLOPT_CAINFO] = realpath(dirname(__FILE__).DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'data').DIRECTORY_SEPARATOR.'ca-bundle.crt';
+        $opts[CURLOPT_CAINFO] = realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'data') . DIRECTORY_SEPARATOR . 'ca-bundle.crt';
 
         curl_setopt_array($curl, $opts);
 
@@ -119,5 +99,25 @@ class Iugu_APIRequest
         curl_close($curl);
 
         return [$response_body, $response_code];
+    }
+
+    private function encodeParameters($method, $url, $data = [])
+    {
+        $method = strtolower($method);
+
+        switch ($method) {
+            case 'get':
+            case 'delete':
+                $paramsInURL = Iugu_Utilities::arrayToParams($data);
+                $data = null;
+                $url = (strpos($url, '?')) ? $url . '&' . $paramsInURL : $url . '?' . $paramsInURL;
+                break;
+            case 'post':
+            case 'put':
+                $data = Iugu_Utilities::arrayToParams($data);
+                break;
+        }
+
+        return [$url, $data];
     }
 }
