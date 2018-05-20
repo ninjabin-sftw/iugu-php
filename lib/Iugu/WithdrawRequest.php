@@ -1,6 +1,6 @@
 <?php
 
-class Iugu_Account extends APIResource
+class Iugu_WithdrawRequest extends APIResource
 {
     public static function create($attributes = [])
     {
@@ -30,10 +30,5 @@ class Iugu_Account extends APIResource
     public static function search($options = [])
     {
         return self::searchAPI($options);
-    }
-
-    public static function invoices($options = [])
-    {
-        return self::searchAPI(array_merge($options, ['action' => 'invoices']));
     }
 }
