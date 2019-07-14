@@ -40,10 +40,10 @@ class Iugu_Subscription extends APIResource
 
         try {
             $response = self::API()->request(
-        'PUT',
-        static::url($this).'/add_credits',
-        ['quantity' => $quantity]
-      );
+                'PUT',
+                static::url($this) . '/add_credits',
+                ['quantity' => $quantity]
+            );
             if (isset($response->errors)) {
                 return false;
             }
@@ -67,10 +67,10 @@ class Iugu_Subscription extends APIResource
 
         try {
             $response = self::API()->request(
-        'PUT',
-        static::url($this).'/remove_credits',
-        ['quantity' => $quantity]
-      );
+                'PUT',
+                static::url($this) . '/remove_credits',
+                ['quantity' => $quantity]
+            );
             if (isset($response->errors)) {
                 return false;
             }
@@ -94,9 +94,9 @@ class Iugu_Subscription extends APIResource
 
         try {
             $response = self::API()->request(
-        'POST',
-        static::url($this).'/suspend'
-      );
+                'POST',
+                static::url($this) . '/suspend'
+            );
 
             if (isset($response->errors)) {
                 return false;
@@ -124,9 +124,9 @@ class Iugu_Subscription extends APIResource
 
         try {
             $response = self::API()->request(
-        'POST',
-        static::url($this).'/activate'
-      );
+                'POST',
+                static::url($this) . '/activate'
+            );
             if (isset($response->errors)) {
                 return false;
             }
@@ -156,9 +156,9 @@ class Iugu_Subscription extends APIResource
 
         try {
             $response = self::API()->request(
-        'POST',
-        static::url($this).'/change_plan/'.$identifier
-      );
+                'POST',
+                static::url($this) . '/change_plan/' . $identifier
+            );
             if (isset($response->errors)) {
                 return false;
             }
@@ -179,5 +179,29 @@ class Iugu_Subscription extends APIResource
         }
 
         return Iugu_Customer::fetch($this->customer_id);
+    }
+
+    public function change_plan_simulation($identifier = null)
+    {
+        if ($this->is_new()) {
+            return false;
+        }
+        if ($identifier == null) {
+            return false;
+        }
+
+        try {
+            $response = self::API()->request(
+                'POST',
+                static::url($this) . '/change_plan_simulator/' . $identifier
+            );
+            if (isset($response->errors)) {
+                return false;
+            }
+        } catch (Exception $e) {
+            return false;
+        }
+
+        return true;
     }
 }

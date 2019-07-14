@@ -52,9 +52,9 @@ class Iugu_Invoice extends APIResource
 
         try {
             $response = self::API()->request(
-        'PUT',
-        static::url($this).'/cancel'
-      );
+                'PUT',
+                static::url($this) . '/cancel'
+            );
             if (isset($response->errors)) {
                 throw new IuguRequestException($response->errors);
             }
@@ -76,9 +76,9 @@ class Iugu_Invoice extends APIResource
 
         try {
             $response = self::API()->request(
-        'POST',
-        static::url($this).'/refund'
-      );
+                'POST',
+                static::url($this) . '/refund'
+            );
             if (isset($response->errors)) {
                 throw new IuguRequestException($response->errors);
             }
@@ -91,27 +91,27 @@ class Iugu_Invoice extends APIResource
 
         return true;
     }
-	
-  public function duplicate($options=Array())
-  {
-		if ($this->is_new()) return false;
 
-		try {
-			$response = self::API()->request(
-				"POST",
-				static::url($this) . "/duplicate",
-				$options
-			);
-			if (isset($response->errors)) {
-				throw new IuguRequestException( $response->errors );
-			}
-			return self::createFromResponse($response);
-		} catch (Exception $e) {
-			return false;
-		}
+    public function duplicate($options = Array())
+    {
+        if ($this->is_new()) return false;
 
-	return true;
-  }  
+        try {
+            $response = self::API()->request(
+                "POST",
+                static::url($this) . "/duplicate",
+                $options
+            );
+            if (isset($response->errors)) {
+                throw new IuguRequestException($response->errors);
+            }
+            return self::createFromResponse($response);
+        } catch (Exception $e) {
+            return false;
+        }
+
+        return true;
+    }
 
 
     public function capture()
@@ -123,7 +123,7 @@ class Iugu_Invoice extends APIResource
         try {
             $response = self::API()->request(
                 'POST',
-                static::url($this).'/capture'
+                static::url($this) . '/capture'
             );
             if (isset($response->errors)) {
                 throw new IuguRequestException($response->errors);
