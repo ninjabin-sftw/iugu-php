@@ -204,4 +204,31 @@ class Iugu_Subscription extends APIResource
 
         return true;
     }
+
+    //to change a given subscription
+    public function update($data)
+    {
+        if ($this->is_new()) {
+            return false;
+        }
+
+        try {
+            $response = self::API()->request(
+                'PUT',
+                static::url($this),
+                $data
+            );
+
+            if (isset($response->errors)) {
+                return false;
+            }
+            $new_object = self::createFromResponse($response);
+            $this->copy($new_object);
+            $this->resetStates();
+
+            return $new_object;
+        } catch (Exception $e) {
+            return false;
+        }
+    }
 }
